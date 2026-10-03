@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#17231e"><title>O Último Pedido — Sexto Turno</title><meta name="description" content="Seis turnos no Restaurante São Bento. Prepare os pedidos, corte o tomate e termine o último serviço."><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2317231e'/%3E%3Ccircle cx='16' cy='18' r='9' fill='%23c45b3e'/%3E%3Cpath d='M16 10l-5-4 5 1 5-3-2 6' fill='%23aec58b'/%3E%3C/svg%3E"><link rel="stylesheet" href="style.css?v=15"></head>
+<body>
+<canvas id="world" aria-label="Restaurante em primeira pessoa"></canvas><div id="shade"></div><div id="cutCursor" hidden></div>
+<section id="menu" class="screen" aria-label="Menu principal">
+ <div class="menu-light" aria-hidden="true"></div>
+ <nav class="menu-nav" aria-label="Opções do jogo">
+  <button id="continueGame" class="menu-action selected" type="button"><span>CONTINUAR</span><small id="continueMeta">TURNO 01</small></button>
+  <button id="newTurn" class="menu-action" type="button"><span>NOVO TURNO</span><small>RECOMEÇAR</small></button>
+  <button id="openSettings" class="menu-action" type="button"><span>CONFIGURAÇÕES</span><small>SOM · BRILHO</small></button>
+  <button id="openStory" class="menu-action" type="button"><span>HISTÓRIA</span><small>RESTAURANTE SÃO BENTO</small></button>
+  <button id="exitGame" class="menu-action" type="button"><span>SAIR</span><small>ENCERRAR SESSÃO</small></button>
+ </nav>
+ <p class="menu-foot">WASD · ANDAR &nbsp;&nbsp; MOUSE · OLHAR &nbsp;&nbsp; E · USAR</p>
+ <section id="menuSettings" class="menu-sheet" hidden aria-label="Configurações">
+  <button class="sheet-close" data-menu-close type="button" aria-label="Fechar configurações">×</button>
+  <p class="eyebrow">CONFIGURAÇÕES</p><h2>Ajuste o turno.</h2>
+  <label class="menu-range">BRILHO <input id="menuBrightness" type="range" min="0.7" max="1.6" value="1.1" step=".1"><output id="brightnessValue">110%</output></label>
+  <button id="menuSound" class="sheet-option" type="button">SOM: ON</button>
+  <button id="menuMotion" class="sheet-option" type="button">ANIMAÇÃO: COMPLETA</button>
+  <p class="sheet-note">As pistas importantes também aparecem em texto na tela.</p>
+ </section>
+ <section id="menuStory" class="menu-sheet" hidden aria-label="História">
+  <button class="sheet-close" data-menu-close type="button" aria-label="Fechar história">×</button>
+  <p class="eyebrow">HISTÓRIA</p><h2>O Último Pedido.</h2>
+  <p>Você assume o serviço noturno do Restaurante São Bento. Em seis turnos, pedidos antigos começam a voltar para a impressora — sempre levando à Mesa 04 e ao nome de Otávio.</p>
+  <p>Prepare pão, ovo e tomate, observe as mudanças no salão e termine o pedido 217 antes que o relógio pare de novo em 02:17.</p>
+  <p class="sheet-note">A narrativa acontece durante o preparo e por meio das comandas, do rádio e do ambiente.</p>
+ </section>
+ <section id="menuExit" class="menu-sheet" hidden aria-label="Sair do jogo">
+  <button class="sheet-close" data-menu-close type="button" aria-label="Fechar saída">×</button>
+  <p class="eyebrow">SAIR</p><h2>Encerrar o serviço?</h2>
+  <p>Seu último turno alcançado fica salvo neste navegador.</p>
+  <button id="confirmExit" class="sheet-option danger" type="button">ENCERRAR SESSÃO</button>
+  <button class="sheet-option" data-menu-close type="button">VOLTAR AO MENU</button>
+ </section>
+ <section id="sessionEnded" class="session-ended" hidden aria-live="polite"><p class="eyebrow">SESSÃO ENCERRADA</p><h2>O restaurante fechou.</h2><p>Você já pode fechar esta aba.</p><button id="reopenMenu" class="sheet-option" type="button">VOLTAR AO MENU</button></section>
+</section>
+<div id="hud" hidden>
+ <div class="objective"><p id="chapter" class="eyebrow"></p><h2 id="goal"></h2><p id="detail"></p></div>
+ <div class="top-actions"><button id="sound" aria-label="Ativar ou desativar som">SOM: ON</button><button id="pause" aria-label="Pausar J">Ⅱ</button></div>
+ <aside id="ticket" hidden><p class="ticket-top">SÃO BENTO <span id="orderNo"></span></p><h3>PÃO, OVO E TOMATE</h3><p id="customer"></p><p id="orderNote"></p><ol><li id="stepCut">Tomate cortado</li><li id="stepAssemble">Montar pão + tomate</li><li id="stepToast">Tostar pão e fritar ovo</li><li id="stepServe">Servir no balcão</li></ol></aside>
+ <div id="reticle">+</div><div id="prompt"></div><p id="subtitle" role="status" aria-live="polite"></p>
+ <div class="bottom"><span id="inventory">MÃOS LIVRES</span><span id="shiftClock">22:10</span></div>
+ <div id="cutUI" hidden><p id="cutCount"></p><p id="cutHint">Segure e arraste para baixo. Solte para erguer a faca.</p><div class="progress"><span id="cutProgress"></span></div><button id="leaveBoard">VOLTAR À COZINHA · E</button></div>
+ <div id="touchControls"><div id="joystick" aria-label="Mover"><div id="stick"></div></div><button id="use">USAR</button></div>
+</div>
+<section id="pauseScreen" class="screen modal" hidden><div class="panel"><p class="eyebrow">O ÚLTIMO PEDIDO</p><h2>Uma pausa<br>no serviço.</h2><p>O pedido pode esperar.</p><button id="resume" class="primary">CONTINUAR</button><p class="controls">WASD / setas · andar e virar<br>E · usar ou sair da tábua<br>Na tábua: arraste para baixo ou segure ESPAÇO.<br>Solte entre os cortes. Setas ajustam a faca.</p><label class="brightness">Brilho <input id="brightness" type="range" min="0.7" max="1.6" value="1.1" step=".1"></label><button id="restart" class="secondary">RECOMEÇAR OS SEIS TURNOS</button><button id="menuFromPause" class="secondary">VOLTAR AO MENU PRINCIPAL</button></div></section>
+<section id="receiptScreen" class="screen modal" hidden><div class="paper"><p class="eyebrow">RESTAURANTE SÃO BENTO</p><h2 id="receiptTitle">PEDIDO ENTREGUE</h2><p id="receiptText"></p><p id="receiptFooter"></p><button id="closeReceipt" class="primary">CONTINUAR</button></div></section>
+<section id="ending" class="screen modal" hidden><div class="panel ending"><p class="eyebrow">06 / 06 · SERVIÇO ENCERRADO</p><h2>A casa<br>ficou em silêncio.</h2><p>Você deixou o prato no balcão e saiu com as mãos vazias. Atrás do vidro, o relógio finalmente passou das seis.</p><p class="endtime">06:01</p><button id="again" class="primary">OUTRA NOITE</button></div></section>
+<section id="error" class="screen modal" hidden><div class="panel"><h2>A cozinha não abriu.</h2><p id="errorText">Ative a aceleração gráfica e use um navegador com WebGL.</p></div></section>
+<script type="module" src="game.js?v=15"></script></body></html>
